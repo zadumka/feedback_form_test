@@ -4,6 +4,7 @@ from behave import given, when, then, use_fixture
 from playwright.sync_api import expect, sync_playwright
 import Data
 from Data.host_list import HOST_LIST
+import urllib.parse
 
 
 @when('user goes to lend page with "{host}"')
@@ -38,6 +39,13 @@ def step_def(context):
 
 
 
+@when('user sees thanks modall')
+def step_def(context):
+    expect(context.page.locator("//div[@aria-labelledby]")).to_be_visible()
+
+
+
+
 @then('user sees the transition page to Telegram')
 def step_def(context):
     transition_page = context.page.locator('//a[@href="//telegram.org/"]')
@@ -48,8 +56,6 @@ def step_def(context):
         print("Transition page to Telegram is not visible.")
 
 
-
-import urllib.parse
 
 
 @then('intercept form submission and check data on "{host}"')
@@ -71,7 +77,7 @@ def step_def(context, host):
 
     # Виконання дій на сторінці
     context.page.locator(f'//button[@type="submit"]').nth(1).click()
-    context.page.wait_for_timeout(1000)
+    context.page.wait_for_timeout(500)
     assert second_request is not None # Чекаємо, щоб запити були виконані
 
     if second_request:
