@@ -1,0 +1,5 @@
+behave>=1.2.6
+requests==2.31.0
+pg8000==1.29.6
+playwright==1.35.0
+allure-behave==2.13.2
