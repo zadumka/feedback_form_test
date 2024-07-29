@@ -17,13 +17,28 @@ def step_def(context, host):
 
 
 
-@then('user fills and sends feedback form')
+@when('user fills correct data and sends feedback form')
 def step_def(context):
-    context.page.locator('//button[@data-modal-open]').nth(1).click()
-    context.page.locator('//input[@name="name"]').nth(1).fill("TEST")
-    context.page.locator('//input[@name="email"]').nth(1).fill("test12@qa.team")
-    context.page.locator('//input[@name="phone"]').nth(1).fill("347526911")
-    # context.page.locator(f'//button[@type="submit"]').nth(1).click()
+    context.page.locator('//input[@id="register_input_name"]').fill("TEST")
+    context.page.locator('//input[@id="register_input_email"]').fill("test12@qa.team")
+    context.page.locator('//input[@id="register_input_phone"]').fill("347526911")
+
+
+
+@when('user fills incorrect data to the feedback form')
+def step_def(context):
+    context.page.locator('//input[@id="register_input_name"]').fill("TEST 1234")
+    context.page.locator('//input[@id="register_input_email"]').fill("test12qa.team")
+    context.page.locator('//input[@id="register_input_phone"]').fill("347526911122")
+
+
+@then('expected validation errors are under the form fields')
+def step_def(context):
+    expect(context.page.get_by_text("Ім’я невірне")).to_be_visible()
+    expect(context.page.get_by_text("Email невірний!")).to_be_visible()
+    expect(context.page.get_by_text("Номер телефону невірний!")).to_be_visible()
+
+
 
 
 
@@ -75,11 +90,12 @@ def step_def(context, host):
     context.page.on('request', handle_request)
 
     # Виконання дій на сторінці
-    context.page.locator(f'//button[@type="submit"]').nth(1).click()
+    context.page.locator(f'//form[@id="register"]/button[@type="submit"]').click()
     context.page.wait_for_timeout(500)
 
     # Перевірка на помилку
     if context.page.locator('//div[@class="swal2-icon swal2-error swal2-icon-show"]').is_visible():
+        #context.page.get_by_role("heading", name="Помилка!").is_visible()
         print("Знайдена помилка у формі! Такої пошти не існує")
         return
 
