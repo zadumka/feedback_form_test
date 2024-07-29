@@ -26,7 +26,7 @@ def step_def(context):
 
 
 
-@when('user fills incorrect data to the feedback form')
+@when('user fills in correct data to the feedback form')
 def step_def(context):
     context.page.locator('//input[@id="register_input_name"]').fill("TEST 1234")
     context.page.locator('//input[@id="register_input_email"]').fill("test12qa.team")
@@ -88,7 +88,7 @@ def step_def(context, host):
     context.page.on('request', handle_request)
 
     # Виконання дій на сторінці
-    context.page.locator(f'//button[@type="submit"]').nth(1).click()
+    context.page.locator(f'//form[@id="register"]/button[@type="submit"]').click()
     context.page.wait_for_timeout(500)
 
     # Перевірка на помилку
