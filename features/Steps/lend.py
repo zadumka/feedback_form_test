@@ -84,10 +84,11 @@ def step_def(context, host):
             if request_count == 2:
                 second_request = request
 
+
     context.page.on('request', handle_request)
 
     # Виконання дій на сторінці
-    context.page.locator(f'//form[@id="register"]/button[@type="submit"]').click()
+    context.page.locator(f'//button[@type="submit"]').nth(1).click()
     context.page.wait_for_timeout(500)
 
     # Перевірка на помилку
@@ -174,3 +175,4 @@ def step_def(context):
                 all_lang_valid = False
     # Перевірка, чи всі описи alt відповідають мові сторінки
     assert all_lang_valid, "Some alt texts are not in the correct language."
+
