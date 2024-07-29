@@ -5,6 +5,7 @@ from playwright.sync_api import expect, sync_playwright
 import Data
 from Data.host_list import HOST_LIST
 import urllib.parse
+from langdetect import detect
 
 
 @when('user goes to lend page with "{host}"')
@@ -40,8 +41,6 @@ def step_def(context):
 
 
 
-
-
 @when('user sees modall whith telegram button')
 def step_def(context):
     context.page.wait_for_timeout(1000)
@@ -60,7 +59,6 @@ def step_def(context):
 
 
 
-
 @then('user sees the transition page to Telegram')
 def step_def(context):
     transition_page = context.page.locator('//a[@href="//telegram.org/"]')
@@ -69,7 +67,6 @@ def step_def(context):
         print("Transition page to Telegram is visible.")
     except AssertionError:
         print("Transition page to Telegram is not visible.")
-
 
 
 
@@ -130,40 +127,50 @@ def step_def(context, host):
 
 
 
-
-
-
-
-
 @then('check all images have non-empty alt attributes')
 def step_def(context):
     page = context.page  # Отримуємо сторінку з контексту тесту
     images = page.locator('img')
 
-    # Отримати кількість зображень
-    image_count = images.count()
-
     all_alt_valid = True
 
-    # Перебрати всі зображення
-    for index in range(image_count):
-        img = images.nth(index)
+    for img in images.all():
         alt_text = img.get_attribute('alt')
-        src = img.get_attribute('src')  # Отримати URL зображення
+        src = img.get_attribute('src')  # Отримуємо URL зображення
 
         if not alt_text:
-            print(f"Image at index {index} (URL: {src}) has an empty alt attribute.")
+            print(f"Image (URL: {src}) has an empty alt attribute.")
             all_alt_valid = False
-        else:
-            print(f"Image at index {index} (URL: {src}) has alt text: {alt_text}")
-
+        # else:
+        #     print(f"Image (URL: {src}) has alt text: {alt_text}")
     # Перевірка, чи всі alt атрибути не пусті
-    if all_alt_valid:
-        print("All images have non-empty alt attributes.")
-    else:
-        print("Some images have empty alt attributes.")
-        assert all_alt_valid, "Some images have empty alt attributes."
+    assert all_alt_valid, "Some images have empty alt attributes."
 
 
+@then('check all images alt text matches page language')
+def step_def(context):
+    page = context.page  # Отримуємо сторінку з контексту тесту
+    images = page.locator('img')
+    lang = page.get_attribute('html', 'lang') # Отримуємо lang атрибут сторінки
 
+    lang_mapping = {
+        'uk': 'uk',  # Українська
+        'en': 'en', # Англійська
+        'ro-RO': 'ro' # Румунська
 
+    }
+    expected_lang = lang_mapping.get(lang)
+    assert expected_lang is not None, f"Unsupported language '{lang}' detected."
+
+    all_lang_valid = True
+
+    for img in images.all(): # Перебрати всі зображення
+        alt_text = img.get_attribute('alt')
+        src = img.get_attribute('src')  # Отримуємо URL зображення
+        if alt_text:  # Перевіряємо тільки непорожні alt атрибути
+            detected_lang = detect(alt_text)  # Отримати визначену мову
+            if detected_lang != expected_lang:
+                print(f"Image (URL: {src}) has alt text in '{detected_lang}' language instead of '{expected_lang}'.")
+                all_lang_valid = False
+    # Перевірка, чи всі описи alt відповідають мові сторінки
+    assert all_lang_valid, "Some alt texts are not in the correct language."
