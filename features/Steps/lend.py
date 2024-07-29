@@ -12,7 +12,7 @@ def step_def(context, host):
     host_url = HOST_LIST.get(host)
     context.page.goto(f"https://{host_url}/")
     context.page.pause()
-    context.page.get_by_label("Close").click()
+    # context.page.get_by_label("Close").click()
     expect(context.page.locator(f'//h1')).to_be_visible()
 
 
@@ -127,3 +127,43 @@ def step_def(context, host):
         assert '347526911' in string_data
         assert len(product_name_parse) not in range(0, 8)
         assert len(product_id_parse) not in range(0, 8)
+
+
+
+
+
+
+
+
+@then('check all images have non-empty alt attributes')
+def step_def(context):
+    page = context.page  # Отримуємо сторінку з контексту тесту
+    images = page.locator('img')
+
+    # Отримати кількість зображень
+    image_count = images.count()
+
+    all_alt_valid = True
+
+    # Перебрати всі зображення
+    for index in range(image_count):
+        img = images.nth(index)
+        alt_text = img.get_attribute('alt')
+        src = img.get_attribute('src')  # Отримати URL зображення
+
+        if not alt_text:
+            print(f"Image at index {index} (URL: {src}) has an empty alt attribute.")
+            all_alt_valid = False
+        else:
+            print(f"Image at index {index} (URL: {src}) has alt text: {alt_text}")
+
+    # Перевірка, чи всі alt атрибути не пусті
+    if all_alt_valid:
+        print("All images have non-empty alt attributes.")
+    else:
+        print("Some images have empty alt attributes.")
+        assert all_alt_valid, "Some images have empty alt attributes."
+
+
+
+
