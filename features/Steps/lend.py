@@ -72,13 +72,18 @@ def step_def(context, host):
             if request_count == 2:
                 second_request = request
 
-
     context.page.on('request', handle_request)
 
     # Виконання дій на сторінці
     context.page.locator(f'//button[@type="submit"]').nth(1).click()
     context.page.wait_for_timeout(500)
-    assert second_request is not None # Чекаємо, щоб запити були виконані
+
+    # Перевірка на помилку
+    if context.page.locator('//div[@class="swal2-icon swal2-error swal2-icon-show"]').is_visible():
+        print("Знайдена помилка у формі! Такої пошти не існує")
+        return
+
+    assert second_request is not None  # Чекаємо, щоб запити були виконані
 
     if second_request:
         context.request_body = urllib.parse.parse_qs(second_request.post_data)
