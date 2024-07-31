@@ -5,6 +5,7 @@ HOST_LIST = {
         "host4": "cs-m-lp-ua.goit.global",
         "host5": "neo.goit.global",
         "host6": "goit.global/ro/courses/fullstack",
-        "host7": "neobachelor-direct-lp-ua.goit.global/"
+        "host7": "neobachelor-direct-lp-ua.goit.global/",
+        "host8": "uxdesign-direct-lp-ua.goit.global"
 
 }
