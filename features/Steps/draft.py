@@ -184,3 +184,8 @@ from langdetect import detect
 #         assert '347526911' in string_data
 #         assert len(product_name_parse) not in range(0, 8)
 #         assert len(product_id_parse) not in range(0, 8)
+
+
+# @when('user sees thanks modal')
+# def step_def(context):
+#     # expect(context.page.locator("//div[@aria-labelledby]")).to_be_visible()
