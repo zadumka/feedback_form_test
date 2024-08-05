@@ -2,10 +2,10 @@
 Feature: test lend
 
 @browser.headless @lend1
-  Scenario Outline: User check lend form
+  Scenario Outline: User checks lend form
 
     When user goes to lend page with "<host>"
-    When user fills in correct data to the feedback form
+    When user fills incorrect data to the feedback form
     Then expected validation errors are under the form fields submit button is enabled
     When user fills correct data and sends feedback form
     Then intercept form submission and check data on "<host>"
@@ -26,7 +26,7 @@ Feature: test lend
 
 
   @browser.headless @lend2
-  Scenario Outline: User check request form
+  Scenario Outline: User checks request form
 
     When user goes to request page with "<host>"
     When user fills correct data and sends request form

@@ -27,7 +27,7 @@ def step_def(context):
 
 
 
-@when('user fills in correct data to the feedback form')
+@when('user fills incorrect data to the feedback form')
 def step_def(context):
     context.page.locator('//input[@id="register_input_name"]').fill("TEST 1234")
     context.page.locator('//input[@id="register_input_email"]').fill("test12qa.team")
@@ -52,10 +52,10 @@ def step_def(context):
 
 @when('user sees modall whith telegram button')
 def step_def(context):
-    # context.page.pause()
     context.page.wait_for_timeout(1000)
-    expect(context.page.frame_locator("internal:text=\"</div>\"i").get_by_role("button", name="icon Telegram")).to_be_visible()
+    context.page.wait_for_timeout(1000)
     telegram_button = context.page.frame_locator("internal:text=\"</div>\"i").get_by_role("button", name="icon Telegram")
+    expect(telegram_button).to_be_visible()
     if telegram_button.is_visible():
         telegram_button.click()
     else:
