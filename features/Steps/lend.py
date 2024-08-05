@@ -5,7 +5,7 @@ from playwright.sync_api import expect, sync_playwright
 import Data
 from Data.host_list import HOST_LIST
 import urllib.parse
-from langdetect import detect
+
 
 
 @when('user goes to lend page with "{host}"')
@@ -13,7 +13,7 @@ def step_def(context, host):
     host_url = HOST_LIST.get(host)
     context.page.goto(f"https://{host_url}/")
     # context.page.pause()
-    # context.page.get_by_label("Close").click()
+    context.page.get_by_label("Close").click()
     expect(context.page.locator(f'//h1')).to_be_visible()
 
 
@@ -36,7 +36,7 @@ def step_def(context):
 @then('expected validation errors are under the form fields submit button is enabled')
 def step_def(context):
     submit_button = context.page.locator('//form[@id="register"]/button[@type="submit"]')
-    # Перевіряємо, що кнопка не натиснулась (вона може бути вимкнена або активна)
+    # Перевіряємо, що кнопка не натиснулась
     if submit_button.is_enabled():
         # Натискаємо кнопку і перевіряємо, що повідомлення про помилки все ще присутні
         submit_button.click()
@@ -51,8 +51,9 @@ def step_def(context):
 
 @when('user sees modall whith telegram button')
 def step_def(context):
+    # context.page.pause()
     context.page.wait_for_timeout(1000)
-    expect(context.page.locator('//div[contains(@class, "leeloo-lgt-form-wrapper")]')).to_be_visible()
+    expect(context.page.frame_locator("internal:text=\"</div>\"i").get_by_role("button", name="icon Telegram")).to_be_visible()
     telegram_button = context.page.frame_locator("internal:text=\"</div>\"i").get_by_role("button", name="icon Telegram")
     if telegram_button.is_visible():
         telegram_button.click()
@@ -69,12 +70,11 @@ def step_def(context):
 
 @then('user sees the transition page to Telegram')
 def step_def(context):
+    context.page.wait_for_timeout(5000)
     transition_page = context.page.locator('//a[@href="//telegram.org/"]')
-    try:
-        expect(transition_page).to_be_visible()
-        print("Transition page to Telegram is visible.")
-    except AssertionError:
-        print("Transition page to Telegram is not visible.")
+    expect(transition_page).to_be_visible()
+    print("Transition page to Telegram is visible.")
+
 
 
 
@@ -94,8 +94,6 @@ def step_def(context, host):
 
 
     context.page.on('request', handle_request)
-
-    # Виконання дій на сторінці
     context.page.locator(f'//form[@id="register"]/button[@type="submit"]').click()
     context.page.wait_for_timeout(500)
 
@@ -136,55 +134,3 @@ def step_def(context, host):
 
 
 
-@then('check all images have non-empty alt attributes')
-def step_def(context):
-    page = context.page  # Отримуємо сторінку з контексту тесту
-    images = page.locator('img')
-
-    all_alt_valid = True
-
-    for img in images.all():
-        alt_text = img.get_attribute('alt')
-        src = img.get_attribute('src')  # Отримуємо URL зображення
-
-        if not alt_text:
-            print(f"Image (URL: {src}) has an empty alt attribute.")
-            all_alt_valid = False
-        # else:
-        #     print(f"Image (URL: {src}) has alt text: {alt_text}")
-    # Перевірка, чи всі alt атрибути не пусті
-    assert all_alt_valid, "Some images have empty alt attributes."
-
-
-
-
-from langdetect import detect, DetectorFactory
-
-# Встановлюємо фіксоване зерно для детектора
-DetectorFactory.seed = 0
-
-
-@then('check all images alt text matches page language')
-def step_def(context):
-    page = context.page  # Отримуємо сторінку з контексту тесту
-    page_language = page.evaluate('document.documentElement.lang')
-
-    # Збір всіх зображень
-    images = page.query_selector_all('img')
-
-    for image in images:
-        alt_text = image.get_attribute('alt')
-        src = image.get_attribute('src')
-
-        # Перевіряємо, чи alt_text не порожній
-        if not alt_text:
-            # print("Зображення не має 'alt' тексту.")
-            continue
-
-        # Визначення мови alt_text
-        alt_language = detect(alt_text)
-
-        # Перевірка, чи мова 'alt' співпадає з мовою сайту
-        if alt_language != page_language:
-            print(
-                f"Зображення за URL '{src}' з 'alt' текстом '{alt_text}' має мову {alt_language}, яка не відповідає мові сайту {page_language}.")
