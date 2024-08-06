@@ -93,18 +93,18 @@ def step_def(context, host):
             if request_count == 2:
                 second_request = request
 
-
     context.page.on('request', handle_request)
     context.page.locator(f'//form[@id="register"]/button[@type="submit"]').click()
     context.page.wait_for_timeout(500)
 
     # Перевірка на помилку
     if context.page.locator('//div[@class="swal2-icon swal2-error swal2-icon-show"]').is_visible():
-        #context.page.get_by_role("heading", name="Помилка!").is_visible()
-        print("Знайдена помилка у формі! Такої пошти не існує")
-        return
+        # Контекст локатора може відрізнятися, але вам потрібно перевірити видимість елемента
+        error_message = "Знайдена помилка у формі! Такої пошти не існує"
+        # print(error_message)
+        assert False, error_message  # Використання асертації для падіння тесту з повідомленням про помилку
 
-    assert second_request is not None  # Чекаємо, щоб запити були виконані
+    assert second_request is not None, "Другий запит не був виконаний"  # Чекаємо, щоб запити були виконані
 
     if second_request:
         context.request_body = urllib.parse.parse_qs(second_request.post_data)
@@ -126,13 +126,11 @@ def step_def(context, host):
         product_id_parse = string_data[start_index:end_index]
         print(f'product id is: {product_id_parse}')
 
-        assert 'TEST' in string_data
-        assert 'test12@qa.team' in string_data
-        assert '347526911' in string_data
-        assert len(product_name_parse) not in range(0, 8)
-        assert len(product_id_parse) not in range(0, 8)
-
-
+        assert 'TEST' in string_data, "Дані не містять 'TEST'"
+        assert 'test12@qa.team' in string_data, "Дані не містять 'test12@qa.team'"
+        assert '347526911' in string_data, "Дані не містять '347526911'"
+        assert len(product_name_parse) not in range(0, 8), "Назва продукту має недопустиму довжину"
+        assert len(product_id_parse) not in range(0, 8), "ID продукту має недопустиму довжину"
 
 # ! Для реквест форм
 
@@ -166,18 +164,18 @@ def step_def(context, host):
             if request_count == 2:
                 second_request = request
 
-
     context.page.on('request', handle_request)
     context.page.locator(f'//form[@id="header"]/button[@type="submit"]').click()
     context.page.wait_for_timeout(500)
 
     # Перевірка на помилку
     if context.page.locator('//div[@class="swal2-icon swal2-error swal2-icon-show"]').is_visible():
-        #context.page.get_by_role("heading", name="Помилка!").is_visible()
-        print("Знайдена помилка у формі! Такої пошти не існує")
-        return
+        # Контекст локатора може відрізнятися, але вам потрібно перевірити видимість елемента
+        error_message = "Знайдена помилка у формі! Такої пошти не існує"
+        # print(error_message)
+        assert False, error_message  # Використання асертації для падіння тесту з повідомленням про помилку
 
-    assert second_request is not None  # Чекаємо, щоб запити були виконані
+    assert second_request is not None, "Другий запит не був виконаний"  # Чекаємо, щоб запити були виконані
 
     if second_request:
         context.request_body = urllib.parse.parse_qs(second_request.post_data)
@@ -199,11 +197,10 @@ def step_def(context, host):
         product_id_parse = string_data[start_index:end_index]
         print(f'product id is: {product_id_parse}')
 
-        assert 'TEST' in string_data
-        assert 'test12@qa.team' in string_data
-        assert '347526911' in string_data
-        assert len(product_name_parse) not in range(0, 8)
-        assert len(product_id_parse) not in range(0, 8)
-
+        assert 'TEST' in string_data, "Дані не містять 'TEST'"
+        assert 'test12@qa.team' in string_data, "Дані не містять 'test12@qa.team'"
+        assert '347526911' in string_data, "Дані не містять '347526911'"
+        assert len(product_name_parse) not in range(0, 8), "Назва продукту має недопустиму довжину"
+        assert len(product_id_parse) not in range(0, 8), "ID продукту має недопустиму довжину"
 
 

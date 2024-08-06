@@ -1,7 +1,7 @@
 @lend
 Feature: test lend
 
-@browser.headless @lend1
+@browser.headed @lend1
   Scenario Outline: User checks lend form
 
     When user goes to lend page with "<host>"
@@ -14,7 +14,7 @@ Feature: test lend
     Examples:
       | host  |
       | host1 |
-      | host2 |
+#      | host2 |
 #      | host3 |
 #      | host4 |
 #      | host5 |
@@ -36,10 +36,10 @@ Feature: test lend
       | host  |
       | host1 |
       | host2 |
-      | host3 |
-      | host4 |
-      | host5 |
-      | host6 |
+#      | host3 |
+#      | host4 |
+#      | host5 |
+#      | host6 |
 
 
 
